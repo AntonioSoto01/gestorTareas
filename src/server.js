@@ -35,6 +35,10 @@ app.delete('/api/tasks/:id', (req, res) => {
     tasks = tasks.filter(task => task.id !== taskId);
     res.json(tasks);
 });
+app.delete('/api/tasks/', (req, res) => {
+    tasks=[]
+    res.json(tasks);
+});
 app.listen(port, () => {
     console.log(`Servidor escuchando en http://localhost:${port}`);
 });

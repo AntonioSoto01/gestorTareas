@@ -59,7 +59,17 @@ function deleteTask(id) {
         })
         .catch(error => console.error("Error al eliminar tarea", error));
 }
-
+function deleteAllTasks(){
+    fetch(`http://localhost:3000/api/tasks/`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+    })
+        .then(response => response.json())
+        .then(data => {
+            updateTable(data);
+        })
+        .catch(error => console.error("Error al eliminar tarea", error));  
+}
 function updateTable(tasks) {
     var table = document.getElementById("taskTable");
 
@@ -96,6 +106,7 @@ function updateTable(tasks) {
         cell.appendChild(deleteButton);
     });
 }
+
 function modifyName(id, nameElement, editButton) {
 
 
