@@ -1,20 +1,123 @@
 document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById("addForm").addEventListener("submit", function(event) {
-        event.preventDefault();
-        var name = document.getElementById("addTask").value;
-        addTask(name)
+    loadTask();
+});
+
+function loadTask() {
+    fetch('http://localhost:3000/api/tasks', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
     })
-    loadTable();
-})
+        .then(response => response.json())
+        .then(data => {
+
+            updateTable(data);
+        })
+        .catch(error => console.error("Error al añadir tarea", error));
+}
+function addTask() {
+    var name = document.getElementById("addTask").value;
+    fetch('http://localhost:3000/api/tasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name }),
+    })
+        .then(response => response.json())
+        .then(data => {
+
+            updateTable(data);
+        })
+        .catch(error => console.error("Error al añadir tarea", error));
+}
+
+function editTask(id, editedName, editButton) {
 
 
-function addTask(name) {
-    fetch('http://localhost:3000/api/tasks',{
-        method:'POST',
-        headers:{'Content-Type':'application/json',},
-        body:JSON.stringify({name}),
+
+       fetch(`http://localhost:3000/api/tasks/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: editedName }),
     })
-    .then(response=>response.json())
-    .then(data=>{})
-    .catch(error=>console.error("Error al añadir tarea",error))
+        .then(response => response.json())
+        .then(data => {
+
+            updateTable(data);
+        })
+        .catch(error => console.error("Error al editar tarea", error));
+}
+    
+
+
+function deleteTask(id) {
+    fetch(`http://localhost:3000/api/tasks/${id}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+    })
+        .then(response => response.json())
+        .then(data => {
+            updateTable(data);
+        })
+        .catch(error => console.error("Error al eliminar tarea", error));
+}
+
+function updateTable(tasks) {
+    var table = document.getElementById("taskTable");
+
+    table.innerHTML = "";
+
+    tasks.forEach(task => {
+        var row = table.insertRow();
+        var cell = row.insertCell(0);
+        var nameElement = document.createElement("span");
+        nameElement.innerText = task.name;
+
+        var idElement = document.createElement("span");
+        idElement.innerText = task.id;
+
+        // Agregar elementos al DOM
+        cell.appendChild(nameElement);
+        cell.appendChild(document.createTextNode(" "));
+        cell.appendChild(idElement);
+
+        var editButton = document.createElement("button");
+        editButton.innerHTML = "Editar";
+        editButton.addEventListener("click", function () {
+
+            modifyName(task.id, nameElement, editButton);
+        });
+
+        var deleteButton = document.createElement("button");
+        deleteButton.innerHTML = "Eliminar";
+        deleteButton.addEventListener("click", function () {
+            deleteTask(task.id);
+        });
+
+        cell.appendChild(editButton);
+        cell.appendChild(deleteButton);
+    });
+}
+function modifyName(id, nameElement, editButton) {
+
+
+    //editButton.innerHTML = "Cancelar";
+
+
+    //nameElement.removeEventListener("click", editTask);
+
+
+    nameElement.setAttribute("contenteditable", "true");
+    nameElement.focus();
+
+
+    nameElement.addEventListener("blur", function () {
+
+        var editedName = nameElement.innerText;
+        // nameElement.addEventListener("click", function () {
+        //    editTask(id, nameElement, editButton);
+        //});
+        // editButton.innerHTML = "Editar";
+        //if (currentName !== editedName) {
+       editTask(id,editedName,editButton)
+        //}
+    });
 }
