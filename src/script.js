@@ -70,14 +70,35 @@ function deleteAllTasks(){
         })
         .catch(error => console.error("Error al eliminar tarea", error));  
 }
+function moveTask(taskId, direction) {
+    // Realizar la solicitud al servidor para mover la tarea
+    fetch(`http://localhost:3000/api/tasks/${taskId}/move/${direction}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+    })
+        .then(response => response.json())
+        .then(data => {
+            // Actualizar la tabla con los datos actualizados
+            updateTable(data);
+        })
+        .catch(error => console.error("Error al mover tarea", error));
+}
+
 function updateTable(tasks) {
     var table = document.getElementById("taskTable");
 
-    table.innerHTML = "";
+    while (table.rows.length > 1) {
+        table.deleteRow(1);
+    }
+
 
     tasks.forEach(task => {
         var row = table.insertRow();
-        var cell = row.insertCell(0);
+        for (var i = 0; i < task.state; i++) {
+            row.insertCell(-1);  // Insertar celdas al final de la fila
+        }
+
+        var cell = row.insertCell(-1);
         var nameElement = document.createElement("span");
         nameElement.innerText = task.name;
 
@@ -101,9 +122,20 @@ function updateTable(tasks) {
         deleteButton.addEventListener("click", function () {
             deleteTask(task.id);
         });
-
+        var rightArrow = document.createElement("button");
+        rightArrow.innerHTML = "Derecha";
+        rightArrow.addEventListener("click", function () {
+            moveTask(task.id,1);
+        });
+        var leftArrow = document.createElement("button");
+        leftArrow.innerHTML = "Izquierda";
+        leftArrow.addEventListener("click", function () {
+            moveTask(task.id,-1);
+        });
         cell.appendChild(editButton);
         cell.appendChild(deleteButton);
+        cell.appendChild(rightArrow);
+        cell.appendChild(leftArrow)
     });
 }
 

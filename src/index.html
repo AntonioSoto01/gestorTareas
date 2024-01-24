@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html>
-    <head>
-         <script src="script.js"></script>
-    </head>
-    <body>
-        <h1>Gestor de tareas</h1>
-        <label>Nueva Tarea: <input id="addTask" name="addTask"></label>
-        <button onclick="addTask()">Guardar</button>
-        <button onclick="deleteAllTasks()">Eliminar Todos</button>
-        <table id="taskTable">
-        </table>
-    </body>
+<head>
+    <script src="script.js"></script>
+</head>
+<body>
+<h1>Gestor de tareas</h1>
+<label>Nueva Tarea: <input id="addTask" name="addTask"></label>
+<button onclick="addTask()">Guardar</button>
+<button onclick="deleteAllTasks()">Eliminar Todos</button>
+<table id="taskTable">
+    <tr>
+        <th>Nuevas Tareas</th>
+        <th>Tareas en Curso</th>
+        <th>Tareas Terminadas</th>
+    </tr>
+</table>
+</body>
 </html>
