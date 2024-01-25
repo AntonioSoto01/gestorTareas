@@ -1,5 +1,8 @@
+
+
 document.addEventListener('DOMContentLoaded', function () {
     loadTask();
+    
 });
 
 function loadTask() {
@@ -163,4 +166,19 @@ function modifyName(id, nameElement, editButton) {
        editTask(id,editedName,editButton)
         //}
     });
+}
+function downloadPDF() {
+    const table = document.getElementById("taskTable");
+
+    html2pdf()
+        .set({
+            margin: 1,
+            filename: 'document.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 3, letterRendering: true },
+            jsPDF: { unit: 'in', format: 'a3', orientation: 'portrait' }
+        })
+        .from(table)
+        .save()
+        .catch(err => console.log(err));
 }
